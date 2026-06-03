@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Achats{% endblock %}
+{% block content %}
+<h1>Liste des achats</h1>
+<a href="{% url 'purchase_create' %}" class="btn btn-success mb-3">Nouvel achat</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Fournisseur</th>
+            <th>N° Facture</th>
+            <th>Total</th>
+            <th>Détails</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for purchase in purchases %}
+        <tr>
+            <td>{{ purchase.id }}</td>
+            <td>{{ purchase.date|date:"d/m/Y H:i" }}</td>
+            <td>{{ purchase.fournisseur.nom|default:"-" }}</td>
+            <td>{{ purchase.numero_facture|default:"-" }}</td>
+            <td>{{ purchase.montant_total }} €</td>
+            <td><a href="{% url 'purchase_detail' purchase.id %}" class="btn btn-sm btn-info">Voir</a></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Aucun achat.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

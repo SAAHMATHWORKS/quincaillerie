@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Ajustement de stock{% endblock %}
+{% block content %}
+<h1>Ajustement manuel de stock</h1>
+<p class="text-muted">Une quantité positive ajoute du stock, une quantité négative en retire. Le motif est obligatoire.</p>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Valider l'ajustement</button>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

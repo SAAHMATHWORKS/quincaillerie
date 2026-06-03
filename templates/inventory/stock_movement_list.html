@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Historique des mouvements{% endblock %}
+{% block content %}
+<h1>Historique des mouvements de stock</h1>
+
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-3">
+        <label for="produit" class="form-label">Produit</label>
+        <select name="produit" id="produit" class="form-select">
+            <option value="">Tous</option>
+            {% for p in produits %}
+                <option value="{{ p.id }}" {% if request.GET.produit == p.id|stringformat:"s" %}selected{% endif %}>{{ p.nom }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="type" class="form-label">Type</label>
+        <select name="type" id="type" class="form-select">
+            <option value="">Tous</option>
+            {% for code, label in types_mouvement %}
+                <option value="{{ code }}" {% if request.GET.type == code %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label for="date_debut" class="form-label">Date début</label>
+        <input type="date" name="date_debut" id="date_debut" class="form-control" value="{{ request.GET.date_debut }}">
+    </div>
+    <div class="col-md-2">
+        <label for="date_fin" class="form-label">Date fin</label>
+        <input type="date" name="date_fin" id="date_fin" class="form-control" value="{{ request.GET.date_fin }}">
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Produit</th>
+            <th>Type</th>
+            <th>Quantité</th>
+            <th>Utilisateur</th>
+            <th>Référence</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for mvt in movements %}
+        <tr>
+            <td>{{ mvt.date|date:"d/m/Y H:i" }}</td>
+            <td>{{ mvt.produit.nom }}</td>
+            <td>
+                {% if mvt.type_mouvement == 'ENTREE' %}
+                    <span class="badge bg-success">Entrée</span>
+                {% elif mvt.type_mouvement == 'SORTIE' %}
+                    <span class="badge bg-danger">Sortie</span>
+                {% else %}
+                    <span class="badge bg-warning text-dark">Ajustement</span>
+                {% endif %}
+            </td>
+            <td>{{ mvt.quantite }}</td>
+            <td>{{ mvt.utilisateur.get_full_name|default:mvt.utilisateur.username }}</td>
+            <td>
+                {% if mvt.vente %}
+                    <a href="#" class="mvt-link" data-url="{% url 'sale_detail_modal' mvt.vente.id %}">
+                        Vente #{{ mvt.vente.id }}
+                    </a>
+                {% elif mvt.achat %}
+                    <a href="#" class="mvt-link" data-url="{% url 'purchase_detail_modal' mvt.achat.id %}">
+                        Achat #{{ mvt.achat.id }}
+                    </a>
+                {% else %}
+                    {{ mvt.reference }}
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Aucun mouvement trouvé.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% if is_paginated %}
+<nav>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Précédent</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+            </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Suivant</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="mvtModal" tabindex="-1" aria-labelledby="mvtModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="mvtModalContent">
+      <!-- Le contenu sera chargé ici -->
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var modalElement = document.getElementById('mvtModal');
+    if (!modalElement) return;
+    var modal = new bootstrap.Modal(modalElement);
+    var modalContent = document.getElementById('mvtModalContent');
+
+    // Délégation d'événements sur les liens .mvt-link
+    document.querySelector('tbody').addEventListener('click', function(e) {
+        var link = e.target.closest('.mvt-link');
+        if (!link) return;
+        e.preventDefault();
+        var url = link.getAttribute('data-url');
+        fetch(url)
+            .then(function(response) {
+                if (!response.ok) throw new Error('Erreur réseau');
+                return response.text();
+            })
+            .then(function(html) {
+                modalContent.innerHTML = html;
+                modal.show();
+            })
+            .catch(function(error) {
+                modalContent.innerHTML = '<div class="modal-body">Impossible de charger les détails.</div>';
+                modal.show();
+                console.error(error);
+            });
+    });
+});
+</script>
+{% endblock %}

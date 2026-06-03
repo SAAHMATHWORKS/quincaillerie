@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Saisie inventaire #{{ inventory.id }}{% endblock %}
+{% block content %}
+<h1>Inventaire #{{ inventory.id }} - Saisie des quantités</h1>
+<p>Catégorie : {{ inventory.categorie.nom|default:"Toutes" }}</p>
+<form method="post">
+    {% csrf_token %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Stock théorique</th>
+                <th>Quantité réelle</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in produits %}
+            <tr>
+                <td>{{ p.nom }}</td>
+                <td>{{ p.stock_actuel }}</td>
+                <td>
+                    <input type="hidden" name="produit_id" value="{{ p.id }}">
+                    <input type="number" name="stock_reel" class="form-control" min="0" value="{{ p.stock_actuel }}">
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Enregistrer les quantités</button>
+    <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Produits{% endblock %}
+{% block content %}
+{% if request.GET.stock_faible %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>⚠️ Produits à réapprovisionner</strong> (stock ≤ seuil minimum).
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+</div>
+{% endif %}
+<h1>Liste des produits</h1>
+
+<!-- Formulaire de recherche et filtre -->
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="q" class="form-control" placeholder="Rechercher par code, nom..."
+               value="{{ request.GET.q }}">
+    </div>
+    <div class="col-md-4">
+        <select name="categorie" class="form-select">
+            <option value="">Toutes les catégories</option>
+            {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if request.GET.categorie == cat.id|stringformat:"s" %}selected{% endif %}>
+                    {{ cat.nom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+    </div>
+</form>
+
+<a href="{% url 'product_create' %}" class="btn btn-success mb-3">Ajouter un produit</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Unité</th>
+            <th>Prix achat</th>
+            <th>Prix vente</th>
+            <th>Stock</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <td>{{ product.code }}</td>
+            <td>{{ product.nom }}</td>
+            <td>{{ product.categorie.nom|default:"-" }}</td>
+            <td>{{ product.unite }}</td>
+            <td>{{ product.prix_achat }}</td>
+            <td>{{ product.prix_vente }}</td>
+            <td>
+                {% if product.stock_actuel <= product.stock_minimum %}
+                    <span class="badge bg-danger">{{ product.stock_actuel }}</span>
+                {% else %}
+                    {{ product.stock_actuel }}
+                {% endif %}
+            </td>
+            <td>
+                {% if product.actif %}
+                    <span class="badge bg-success">Oui</span>
+                {% else %}
+                    <span class="badge bg-secondary">Non</span>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'product_edit' product.id %}" class="btn btn-sm btn-primary">Modifier</a>
+                <a href="{% url 'product_delete' product.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="9">Aucun produit trouvé.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categorie %}&categorie={{ request.GET.categorie }}{% endif %}">Précédent</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categorie %}&categorie={{ request.GET.categorie }}{% endif %}">{{ num }}</a>
+            </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.categorie %}&categorie={{ request.GET.categorie }}{% endif %}">Suivant</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

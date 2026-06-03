@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Inventaire #{{ inventory.id }}{% endblock %}
+{% block content %}
+<h1>Inventaire #{{ inventory.id }}</h1>
+<p>Date : {{ inventory.date_creation|date:"d/m/Y H:i" }}</p>
+<p>Validé le : {{ inventory.date_validation|date:"d/m/Y H:i"|default:"-" }}</p>
+<p>Catégorie : {{ inventory.categorie.nom|default:"Toutes" }}</p>
+<table class="table">
+    <thead>
+        <tr><th>Produit</th><th>Stock théorique</th><th>Réel</th><th>Écart</th></tr>
+    </thead>
+    <tbody>
+    {% for item in inventory.items.all %}
+        <tr>
+            <td>{{ item.produit.nom }}</td>
+            <td>{{ item.stock_theorique }}</td>
+            <td>{{ item.stock_reel }}</td>
+            <td>{{ item.ecart }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'inventory_list' %}" class="btn btn-secondary">Retour</a>
+{% endblock %}
+

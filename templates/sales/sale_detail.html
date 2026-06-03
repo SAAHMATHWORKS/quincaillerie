@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Détail vente{% endblock %}
+{% block content %}
+<h1>Vente #{{ sale.id }}</h1>
+<p>Date : {{ sale.date|date:"d/m/Y H:i" }}</p>
+<p>Client : {{ sale.client.nom|default:"Client divers" }}</p>
+<h3>Articles</h3>
+<table class="table">
+    <thead>
+        <tr><th>Produit</th><th>Quantité</th><th>Prix unit.</th><th>Sous-total</th></tr>
+    </thead>
+    <tbody>
+        {% for item in sale.items.all %}
+        <tr>
+            <td>{{ item.produit.nom }}</td>
+            <td>{{ item.quantite }}</td>
+            <td>{{ item.prix_vente }} €</td>
+            <td>{{ item.sous_total }} €</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p><strong>Total : {{ sale.total }} €</strong></p>
+<a href="{% url 'sale_receipt' sale.id %}" class="btn btn-outline-secondary" target="_blank">
+    🧾 Voir le reçu (imprimable)
+</a>
+<a href="{% url 'sale_invoice_pdf' sale.id %}" class="btn btn-outline-danger" target="_blank">📄 Facture PDF</a>
+<a href="{% url 'sale_list' %}" class="btn btn-secondary">Retour</a>
+{% endblock %}

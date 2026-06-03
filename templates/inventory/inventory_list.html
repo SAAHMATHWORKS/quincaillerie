@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Inventaires{% endblock %}
+{% block content %}
+<h1>Historique des inventaires</h1>
+<a href="{% url 'inventory_create' %}" class="btn btn-success mb-3">Nouvel inventaire</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Date création</th>
+            <th>Catégorie</th>
+            <th>Statut</th>
+            <th>Validé le</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for inv in inventories %}
+        <tr>
+            <td>{{ inv.id }}</td>
+            <td>{{ inv.date_creation|date:"d/m/Y H:i" }}</td>
+            <td>{{ inv.categorie.nom|default:"Toutes" }}</td>
+            <td>
+                {% if inv.statut == 'BROUILLON' %}
+                    <span class="badge bg-secondary">Brouillon</span>
+                {% elif inv.statut == 'EN_COURS' %}
+                    <span class="badge bg-warning text-dark">En cours</span>
+                {% else %}
+                    <span class="badge bg-success">Validé</span>
+                {% endif %}
+            </td>
+            <td>{{ inv.date_validation|date:"d/m/Y H:i"|default:"-" }}</td>
+            <td>
+                {% if inv.statut == 'BROUILLON' %}
+                    <a href="{% url 'inventory_count' inv.pk %}" class="btn btn-sm btn-primary">Saisir</a>
+                {% else %}
+                    <a href="{% url 'inventory_detail' inv.pk %}" class="btn btn-sm btn-info">Voir</a>
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Aucun inventaire.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if is_paginated %}
+<nav>... pagination ...</nav>
+{% endif %}
+{% endblock %}

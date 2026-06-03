@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Confirmer ajustements #{{ inventory.id }}{% endblock %}
+{% block content %}
+<h1>Récapitulatif des écarts</h1>
+<p>Inventaire #{{ inventory.id }} - {{ inventory.date_creation|date:"d/m/Y" }}</p>
+{% if ecarts %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Stock théorique</th>
+                <th>Stock réel</th>
+                <th>Écart</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in ecarts %}
+            <tr>
+                <td>{{ item.produit.nom }}</td>
+                <td>{{ item.stock_theorique }}</td>
+                <td>{{ item.stock_reel }}</td>
+                <td>
+                    {% if item.ecart > 0 %}
+                        <span class="text-success">+{{ item.ecart }}</span>
+                    {% else %}
+                        <span class="text-danger">{{ item.ecart }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form method="post" action="{% url 'inventory_apply' inventory.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Appliquer les ajustements</button>
+        <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+{% else %}
+    <p>Aucun écart détecté. Le stock est conforme.</p>
+    <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Retour</a>
+{% endif %}
+{% endblock %}

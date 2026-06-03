@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<h1>Tableau de bord</h1>
+
+<!-- Filtre par période -->
+<form method="get" class="row g-3 mb-4 align-items-end">
+    <div class="col-md-3">
+        <label for="date_debut" class="form-label">Date début</label>
+        <input type="date" name="date_debut" id="date_debut" class="form-control" value="{{ date_debut|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-3">
+        <label for="date_fin" class="form-label">Date fin</label>
+        <input type="date" name="date_fin" id="date_fin" class="form-control" value="{{ date_fin|date:'Y-m-d' }}">
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Appliquer</button>
+    </div>
+</form>
+
+<!-- Cartes -->
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">{{ nb_produits }}</h5>
+                <p class="card-text">Produits actifs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">{{ nb_fournisseurs }}</h5>
+                <p class="card-text">Fournisseurs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">{{ nb_clients }}</h5>
+                <p class="card-text">Clients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">{{ nb_stock_faible }}</h5>
+                <p class="card-text"><a href="{% url 'product_list' %}?stock_faible=1" class="text-white">Stock faible</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card border-primary">
+            <div class="card-body">
+                <h5 class="card-title">{{ nb_ventes_periode }}</h5>
+                <p class="card-text">Ventes sur la période</p>
+                <p class="card-text"><strong>{{ total_ventes_periode|floatformat:2 }} €</strong></p>
+                <a href="{% url 'sale_list' %}?date_debut={{ date_debut|date:'Y-m-d' }}&date_fin={{ date_fin|date:'Y-m-d' }}" class="btn btn-sm btn-outline-primary">Voir les ventes</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success">
+            <div class="card-body">
+                <h5 class="card-title">{{ nb_achats_periode }}</h5>
+                <p class="card-text">Achats sur la période</p>
+                <p class="card-text"><strong>{{ total_achats_periode|floatformat:2 }} €</strong></p>
+                <a href="{% url 'purchase_list' %}?date_debut={{ date_debut|date:'Y-m-d' }}&date_fin={{ date_fin|date:'Y-m-d' }}" class="btn btn-sm btn-outline-success">Voir les achats</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Graphiques -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Ventes mensuelles</div>
+            <div class="card-body">
+                <canvas id="ventesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Achats mensuels</div>
+            <div class="card-body">
+                <canvas id="achatsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header">Top 10 produits vendus (quantité)</div>
+            <div class="card-body">
+                <canvas id="topProduitsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Ventes mensuelles
+var ctxVentes = document.getElementById('ventesChart').getContext('2d');
+new Chart(ctxVentes, {
+    type: 'bar',
+    data: {
+        labels: {{ ventes_labels|safe }},
+        datasets: [{
+            label: 'Ventes (€)',
+            data: {{ ventes_data|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+// Achats mensuels
+var ctxAchats = document.getElementById('achatsChart').getContext('2d');
+new Chart(ctxAchats, {
+    type: 'bar',
+    data: {
+        labels: {{ achats_labels|safe }},
+        datasets: [{
+            label: 'Achats (€)',
+            data: {{ achats_data|safe }},
+            backgroundColor: 'rgba(75, 192, 192, 0.7)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+// Top produits
+var ctxTop = document.getElementById('topProduitsChart').getContext('2d');
+new Chart(ctxTop, {
+    type: 'bar',
+    data: {
+        labels: {{ top_labels|safe }},
+        datasets: [{
+            label: 'Quantité vendue',
+            data: {{ top_qtes|safe }},
+            backgroundColor: 'rgba(153, 102, 255, 0.7)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        indexAxis: 'y',  // barres horizontales pour lisibilité
+        responsive: true,
+        scales: {
+            x: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

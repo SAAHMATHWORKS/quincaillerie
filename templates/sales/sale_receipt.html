@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reçu - Vente #{{ sale.id }}</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 14px;
+            color: #000;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: 'Arial Black', sans-serif;
+            display: none; /* caché par défaut, affiché si l'image ne charge pas */
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        .header p {
+            margin: 2px 0;
+        }
+        .info {
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            text-align: left;
+            padding: 4px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+        th {
+            border-bottom: 1px solid #000;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: right;
+            margin-top: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+        }
+        .btn-print {
+            display: block;
+            margin: 20px auto;
+            padding: 8px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        @media print {
+            .btn-print {
+                display: none !important;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+                font-size: 12px;
+            }
+            @page {
+                margin: 10mm;
+                size: 80mm auto;
+            }
+            .logo img {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .logo-text {
+                display: block; /* si l'image n'existe pas, le texte s'affiche */
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimer le reçu</button>
+
+    <!-- Logo -->
+    <div class="logo">
+        <!-- L'image logo.png sera utilisée si présente -->
+        <img src="{% static 'img/logo.jpg' %}" alt="Logo Quincaillerie"
+             onerror="this.style.display='none'; document.querySelector('.logo-text').style.display='block';">
+        <!-- Fallback texte -->
+        <div class="logo-text">🏬 Quincaillerie</div>
+    </div>
+
+    <div class="header">
+        <p>123 Rue Yatchika, 75000 Douala</p>
+        <p>Tél : 696 37 65 78</p>
+        <p>Reçu de vente</p>
+    </div>
+
+    <div class="info">
+        <p><strong>Vente #{{ sale.id }}</strong></p>
+        <p>Date : {{ sale.date|date:"d/m/Y H:i" }}</p>
+        <p>Client : {{ sale.client.nom|default:"Client divers" }}</p>
+        <p>Vendeur : {{ sale.utilisateur.get_full_name|default:sale.utilisateur.username }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Qté</th>
+                <th>P.U.</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale.items.all %}
+            <tr>
+                <td>{{ item.produit.nom }}</td>
+                <td>{{ item.quantite }}</td>
+                <td>{{ item.prix_vente|floatformat:2 }} XAF</td>
+                <td>{{ item.sous_total|floatformat:2 }} XAF</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        Total TTC : {{ sale.total|floatformat:2 }} XAF
+    </div>
+
+    <div class="footer">
+        Merci de votre visite !
+    </div>
+</body>
+</html>

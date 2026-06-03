@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: quincaillerie
+    env: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application --log-file -
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quincaillerie-db
+          property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production

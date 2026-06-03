@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Nouvel achat{% endblock %}
+{% block content %}
+<h1>Nouvel achat</h1>
+<form method="post" id="purchase-form">
+    {% csrf_token %}
+    {{ form.as_p }}                      <!-- Ici c'est bien le PurchaseForm avec le champ fournisseur -->
+    <h3>Produits achetés</h3>
+    {{ items_formset.management_form }}
+    <table class="table table-bordered" id="items-table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Supprimer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in items_formset %}
+                <tr class="item-form">
+                    <td>{{ form.produit }}</td>
+                    <td>{{ form.quantite }}</td>
+                    <td>{{ form.prix_achat }}</td>
+                    <td>
+                        {% if items_formset.can_delete %}
+                            {{ form.DELETE }} <label for="{{ form.DELETE.id_for_label }}">Suppr.</label>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" id="add-item" class="btn btn-secondary mb-3">Ajouter une ligne</button>
+    <br>
+    <button type="submit" class="btn btn-primary">Enregistrer l'achat</button>
+    <a href="{% url 'purchase_list' %}" class="btn btn-secondary">Annuler</a>
+</form>
+
+<script>
+document.getElementById('add-item').addEventListener('click', function() {
+    const table = document.getElementById('items-table').getElementsByTagName('tbody')[0];
+    const totalForms = document.getElementById('id_items-TOTAL_FORMS');
+    const currentForms = parseInt(totalForms.value);
+    const newRow = table.querySelector('.item-form').cloneNode(true);
+    newRow.innerHTML = newRow.innerHTML.replace(/items-0-/g, `items-${currentForms}-`);
+    // Réinitialiser les valeurs
+    newRow.querySelectorAll('input[type=text], input[type=number]').forEach(input => {
+        if (input.name.includes('DELETE')) {
+            input.checked = false; // décocher la suppression pour la nouvelle ligne
+        } else {
+            input.value = '';
+        }
+    });
+    table.appendChild(newRow);
+    totalForms.value = currentForms + 1;
+});
+</script>
+{% endblock %}

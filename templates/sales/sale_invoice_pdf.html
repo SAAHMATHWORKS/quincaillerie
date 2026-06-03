@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture Vente #{{ sale.id }}</title>
+    <style>
+        @page { size: A4; margin: 2cm; }
+        body { font-family: Arial, sans-serif; font-size: 14px; }
+        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .header img { max-height: 80px; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .info { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .info div { width: 45%; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .total { font-size: 16px; font-weight: bold; text-align: right; border-top: 2px solid #000; padding-top: 10px; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% if logo_base64 %}
+            <img src="data:image/jpeg;base64,{{ logo_base64 }}" 
+                alt="Logo" 
+                style="max-height: 80px;">
+        {% endif %}
+        <p>123 Yatchika Yassa, 75000 Douala</p>
+        <p>Tél : 696 37 65 78 | Email : jilekamgang@yahoo.fr</p>
+    </div>
+
+    <div class="info">
+        <div>
+            <h2>Facture de vente</h2>
+            <p><strong>N° :</strong> {{ sale.id }}</p>
+            <p><strong>Date :</strong> {{ sale.date|date:"d/m/Y" }}</p>
+        </div>
+        <div>
+            <h3>Client</h3>
+            <p>{{ sale.client.nom|default:"Client divers" }}</p>
+            {% if sale.client.telephone %}<p>Tél : {{ sale.client.telephone }}</p>{% endif %}
+            {% if sale.client.email %}<p>Email : {{ sale.client.email }}</p>{% endif %}
+            {% if sale.client.adresse %}<p>Adresse : {{ sale.client.adresse }}</p>{% endif %}
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Qté</th>
+                <th>P.U.</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale.items.all %}
+            <tr>
+                <td>{{ item.produit.nom }}</td>
+                <td>{{ item.quantite }}</td>
+                <td>{{ item.prix_vente|floatformat:2 }} XAF</td>
+                <td>{{ item.sous_total|floatformat:2 }} XAF</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        Total TTC : {{ sale.total|floatformat:2 }} XAF
+    </div>
+
+    <div class="footer">
+        Merci de votre confiance ! - Quincaillerie - TVA non applicable, art. 293B du CGI
+    </div>
+</body>
+</html>
