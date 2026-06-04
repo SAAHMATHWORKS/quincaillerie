@@ -1,6 +1,6 @@
 FROM python:3.12.3-slim
 
-# Dépendances système pour WeasyPrint
+# Installer les dépendances système pour WeasyPrint
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 \
     libpango-1.0-0 \
@@ -17,10 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Collect static files
+# Collecter les fichiers statiques
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-# Utilise $PORT fourni par Railway
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:$PORT", "--log-file", "-"]
+# Utilisation de la forme SHELL pour que $PORT soit bien interprété par Railway
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-file -
