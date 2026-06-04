@@ -1,6 +1,6 @@
 FROM python:3.12.3-slim
 
-# Installer les dépendances système pour WeasyPrint
+# Dépendances système pour WeasyPrint
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 \
     libpango-1.0-0 \
@@ -17,10 +17,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Collecter les fichiers statiques
-RUN python manage.py collectstatic --noinput
+# Rendre le script exécutable
+RUN chmod +x entrypoint.sh
 
 EXPOSE 8000
 
-# Utilisation de la forme SHELL pour que $PORT soit bien interprété par Railway
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-file -
+# Lancer le entrypoint
+ENTRYPOINT ["./entrypoint.sh"]
