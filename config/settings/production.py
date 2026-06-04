@@ -4,6 +4,7 @@ from .base import *
 DEBUG = False
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.railway.app'])
+# ALLOWED_HOSTS = ['.railway.app', '.up.railway.app']
 
 # Base de données
 DATABASES = {
