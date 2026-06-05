@@ -9,6 +9,9 @@ from apps.suppliers.models import Supplier
 from apps.customers.models import Customer
 from apps.sales.models import Sale, SaleItem
 from apps.purchases.models import Purchase, PurchaseItem
+from django.utils.timezone import make_aware
+
+
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard/dashboard.html'
@@ -32,8 +35,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             date_fin = datetime.strptime(date_fin_str, '%Y-%m-%d').date()
 
         # Pour les filtres ORM, on utilise des dates avec heure min et max
-        dt_debut = datetime.combine(date_debut, datetime.min.time())
-        dt_fin = datetime.combine(date_fin, datetime.max.time())
+        dt_debut = make_aware(datetime.combine(date_debut, datetime.min.time()))
+        dt_fin = make_aware(datetime.combine(date_fin, datetime.max.time()))
+        # dt_debut = datetime.combine(date_debut, datetime.min.time())
+        # dt_fin = datetime.combine(date_fin, datetime.max.time())
 
         context['date_debut'] = date_debut
         context['date_fin'] = date_fin
