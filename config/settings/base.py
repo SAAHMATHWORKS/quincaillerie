@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 import environ
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # racine quincaillerie/
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False),
@@ -12,8 +11,10 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, []),
 )
 
-# Lecture du fichier .env à la racine
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# Lire le fichier .env SEULEMENT s'il existe (local uniquement)
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file)
 
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize', 
     'apps.accounts', 
     'apps.inventory',
     'apps.suppliers',
@@ -35,6 +37,8 @@ INSTALLED_APPS = [
     'apps.sales',
     'apps.dashboard',
     'apps.audit',
+    'crispy_forms',
+    'crispy_bootstrap5',
     # Nos apps (créées plus tard)
 ]
 
@@ -104,3 +108,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+CRISPY_CLASS_CONVERTERS = {
+    'textinput': "form-control",
+    'select': "form-select",
+    'textarea': "form-control",
+    'numberinput': "form-control",
+    'emailinput': "form-control",
+    'passwordinput': "form-control",
+}
