@@ -2,12 +2,9 @@
 set -e
 
 echo "🚀 Démarrage de l'application Quincaillerie sur Railway..."
+echo "📋 Settings utilisés : ${DJANGO_SETTINGS_MODULE:-config.settings.production}"
 
-# Forcer les settings de production
-export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-config.settings.production}"
-echo "📋 Settings utilisés : $DJANGO_SETTINGS_MODULE"
-
-# Appliquer les migrations automatiquement
+# Appliquer les migrations
 echo "🔄 Application des migrations..."
 python manage.py migrate --noinput
 

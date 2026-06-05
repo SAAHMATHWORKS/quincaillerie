@@ -2,9 +2,9 @@ import os
 from .base import *
 
 DEBUG = False
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['.railway.app', '.onrender.com'])
+ALLOWED_HOSTS = ['.railway.app', '.up.railway.app']
 
-# PostgreSQL en production
+# PostgreSQL avec variables séparées
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -15,10 +15,6 @@ DATABASES = {
         'PORT': os.environ.get('PGPORT', '5432'),
     }
 }
-
-# Forcer la non-lecture du .env en production
-# (base.py tente de lire .env, mais il n'existe pas sur Railway)
-# Les variables d'environnement du système sont utilisées directement
 
 # Sécurité HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

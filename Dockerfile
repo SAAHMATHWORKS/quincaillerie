@@ -12,15 +12,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+# Installer les dépendances Python
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
+# Copier le projet
 COPY . .
 
-# Rendre le script exécutable
+# Collecter les fichiers statiques
+RUN python manage.py collectstatic --noinput
+
+# Rendre le entrypoint exécutable
 RUN chmod +x entrypoint.sh
 
-EXPOSE 8000
-
-# Lancer le entrypoint
-ENTRYPOINT ["./entrypoint.sh"]
+# Lancer l'application
+CMD ["./entrypoint.sh"]
