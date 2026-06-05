@@ -1,7 +1,267 @@
 {% extends 'base.html' %}
 {% block title %}Nouvelle vente{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #eef1ff;
+        --success: #2ec4b6;
+        --danger: #e63946;
+        --warning: #ff9f1c;
+        --dark: #1d3557;
+        --gray: #6c757d;
+        --light-gray: #f8f9fa;
+        --border: #dee2e6;
+        --shadow: 0 2px 8px rgba(0,0,0,0.06);
+        --radius: 10px;
+        --radius-sm: 6px;
+        --transition: 0.2s ease;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--primary-light);
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header h1 i {
+        color: var(--primary);
+        font-size: 1.3rem;
+    }
+
+    .card-form {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 1.5rem 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-title i {
+        color: var(--primary);
+    }
+
+    .input-group-custom {
+        display: flex;
+        gap: 0;
+    }
+
+    .input-group-custom select {
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm) !important;
+        border: 1px solid var(--border);
+        border-right: none;
+    }
+
+    .input-group-custom .btn-add {
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important;
+        background: white;
+        border: 1px solid var(--border);
+        color: var(--primary);
+        font-weight: 500;
+        white-space: nowrap;
+        padding: 0.375rem 0.75rem;
+        transition: var(--transition);
+    }
+
+    .input-group-custom .btn-add:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .table-items {
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    .table-items thead {
+        background: var(--light-gray);
+    }
+
+    .table-items thead th {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+        border-bottom: 2px solid var(--border);
+        padding: 0.6rem 0.75rem;
+    }
+
+    .table-items tbody td {
+        padding: 0.5rem 0.75rem;
+        vertical-align: middle;
+        border-color: var(--border);
+    }
+
+    .table-items tbody tr {
+        transition: var(--transition);
+    }
+
+    .table-items tbody tr:hover {
+        background: var(--primary-light);
+    }
+
+    .table-items select,
+    .table-items input {
+        border-radius: var(--radius-sm) !important;
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.5rem;
+        font-size: 0.875rem;
+        width: 100%;
+        transition: var(--transition);
+    }
+
+    .table-items select:focus,
+    .table-items input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+        outline: none;
+    }
+
+    .btn-add-line {
+        background: white;
+        border: 1px dashed var(--border);
+        color: var(--primary);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-top: 0.75rem;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-line:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+    }
+
+    .btn-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+        background: #3451d1;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: var(--gray);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .btn-cancel:hover {
+        background: var(--light-gray);
+    }
+
+    .modal-header {
+        background: var(--primary);
+        color: white;
+        border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-content {
+        border-radius: var(--radius);
+        border: none;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    }
+
+    .modal-footer {
+        border-top: 1px solid var(--border);
+    }
+
+    .checkbox-delete {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--danger);
+        cursor: pointer;
+    }
+
+    .badge-stock {
+        font-size: 0.7rem;
+        padding: 0.25em 0.6em;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .input-group-custom {
+            flex-direction: column;
+        }
+        .input-group-custom select {
+            border-radius: var(--radius-sm) !important;
+            border-right: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+        .input-group-custom .btn-add {
+            border-radius: var(--radius-sm) !important;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Nouvelle vente</h1>
+<div class="page-header">
+    <h1><i class="bi bi-cart-check"></i> Nouvelle vente</h1>
+    <span class="badge bg-light text-dark"><i class="bi bi-calendar"></i> {{ today|date:"d/m/Y" }}</span>
+</div>
 
 {% if messages %}
     {% for message in messages %}
@@ -12,96 +272,122 @@
     {% endfor %}
 {% endif %}
 
-<form method="post" id="sale-form">
-    {% csrf_token %}
+<div class="card-form">
+    <form method="post" id="sale-form">
+        {% csrf_token %}
 
-    <!-- Champ client avec bouton d'ajout -->
-    <div class="mb-3">
-        <label for="{{ form.client.id_for_label }}" class="form-label">Client</label>
-        <div class="input-group">
-            {{ form.client }}
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newCustomerModal" title="Ajouter un nouveau client">
-                + Nouveau client
-            </button>
+        <!-- Champ client -->
+        <div class="mb-3">
+            <label for="{{ form.client.id_for_label }}" class="form-label fw-semibold">
+                <i class="bi bi-person"></i> Client
+            </label>
+            <div class="input-group-custom">
+                {{ form.client }}
+                <button type="button" class="btn btn-add" data-bs-toggle="modal" data-bs-target="#newCustomerModal">
+                    + Nouveau client
+                </button>
+            </div>
         </div>
-    </div>
 
-    <h3>Produits vendus</h3>
-    {{ items_formset.management_form }}
-    <table class="table table-bordered" id="items-table">
-        <thead>
-            <tr>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Prix unitaire</th>
-                <th>Supprimer</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for form in items_formset %}
-                <tr class="item-form">
-                    <td>{{ form.produit }}</td>
-                    <td>{{ form.quantite }}</td>
-                    <td>{{ form.prix_vente }}</td>
-                    <td>
-                        {% if items_formset.can_delete %}
-                            {{ form.DELETE }} <label for="{{ form.DELETE.id_for_label }}">Suppr.</label>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <button type="button" id="add-item" class="btn btn-secondary mb-3">Ajouter une ligne</button>
-    <br>
-    <button type="submit" class="btn btn-primary">Enregistrer la vente</button>
-    <a href="{% url 'sale_list' %}" class="btn btn-secondary">Annuler</a>
-</form>
+        <!-- Lignes de produits -->
+        <div class="section-title">
+            <i class="bi bi-box-seam"></i> Produits vendus
+        </div>
 
-<!-- Modal pour créer un nouveau client -->
-<div class="modal fade" id="newCustomerModal" tabindex="-1" aria-labelledby="newCustomerModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+        {{ items_formset.management_form }}
+        <div class="table-items">
+            <table class="table table-borderless mb-0" id="items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 45%;">Produit</th>
+                        <th style="width: 15%;">Quantité</th>
+                        <th style="width: 20%;">Prix unitaire</th>
+                        <th style="width: 20%;">Prix total</th>
+                        <th style="width: 5%;">✕</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in items_formset %}
+                        <tr class="item-form">
+                            <td>{{ form.produit }}</td>
+                            <td>{{ form.quantite }}</td>
+                            <td>{{ form.prix_vente }}</td>
+                            <td class="fw-semibold text-end sous-total">0,00 FCFA</td>
+                            <td class="text-center">
+                                {% if items_formset.can_delete %}
+                                    {{ form.DELETE }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" id="add-item" class="btn-add-line">
+            <i class="bi bi-plus-circle"></i> Ajouter un produit
+        </button>
+
+        <!-- Total général -->
+        <div class="d-flex justify-content-between align-items-center mt-4 p-3 bg-light rounded">
+            <span class="fw-bold fs-5">Total</span>
+            <span class="fw-bold fs-4" id="grand-total" style="color: var(--primary);">0,00 FCFA</span>
+        </div>
+
+        <!-- Boutons -->
+        <div class="btn-actions">
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-check-circle"></i> Enregistrer la vente
+            </button>
+            <a href="{% url 'sale_list' %}" class="btn-cancel">Annuler</a>
+        </div>
+    </form>
+</div>
+
+<!-- Modal client -->
+<div class="modal fade" id="newCustomerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="newCustomerModalLabel">Ajouter un client</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <h5 class="modal-title"><i class="bi bi-person-plus"></i> Ajouter un client</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form id="newCustomerForm">
           {% csrf_token %}
           <div class="mb-3">
-            <label for="id_nom" class="form-label">Nom *</label>
-            <input type="text" class="form-control" id="id_nom" name="nom" required>
+            <label class="form-label fw-semibold">Nom <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="nom" required>
           </div>
           <div class="mb-3">
-            <label for="id_telephone" class="form-label">Téléphone</label>
-            <input type="text" class="form-control" id="id_telephone" name="telephone">
+            <label class="form-label fw-semibold">Téléphone</label>
+            <input type="text" class="form-control" name="telephone">
           </div>
           <div class="mb-3">
-            <label for="id_email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="id_email" name="email">
+            <label class="form-label fw-semibold">Email</label>
+            <input type="email" class="form-control" name="email">
           </div>
           <div class="mb-3">
-            <label for="id_adresse" class="form-label">Adresse</label>
-            <textarea class="form-control" id="id_adresse" name="adresse"></textarea>
+            <label class="form-label fw-semibold">Adresse</label>
+            <textarea class="form-control" name="adresse" rows="2"></textarea>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-primary" id="saveCustomerBtn">Enregistrer</button>
+        <button type="button" class="btn-cancel" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn-submit" id="saveCustomerBtn">Enregistrer</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// Gestion de l'ajout de lignes de produits
+// Ajouter une ligne
 document.getElementById('add-item').addEventListener('click', function() {
-    const table = document.getElementById('items-table').getElementsByTagName('tbody')[0];
+    const tbody = document.querySelector('#items-table tbody');
     const totalForms = document.getElementById('id_items-TOTAL_FORMS');
     const currentForms = parseInt(totalForms.value);
-    const newRow = table.querySelector('.item-form').cloneNode(true);
+    const newRow = tbody.querySelector('.item-form').cloneNode(true);
     newRow.innerHTML = newRow.innerHTML.replace(/items-0-/g, `items-${currentForms}-`);
     newRow.querySelectorAll('input[type=text], input[type=number]').forEach(input => {
         if (input.name.includes('DELETE')) {
@@ -110,11 +396,12 @@ document.getElementById('add-item').addEventListener('click', function() {
             input.value = '';
         }
     });
-    table.appendChild(newRow);
+    newRow.querySelector('.sous-total').textContent = '0,00 FCFA';
+    tbody.appendChild(newRow);
     totalForms.value = currentForms + 1;
 });
 
-// Gestion du modal de création de client
+// Sauvegarder client AJAX
 document.getElementById('saveCustomerBtn').addEventListener('click', function() {
     const form = document.getElementById('newCustomerForm');
     const formData = new FormData(form);
@@ -129,22 +416,14 @@ document.getElementById('saveCustomerBtn').addEventListener('click', function() 
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Ajouter l'option au select
             const select = document.getElementById('{{ form.client.id_for_label }}');
             const option = new Option(data.nom, data.id, true, true);
             select.appendChild(option);
-            // Fermer le modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('newCustomerModal'));
-            modal.hide();
-            // Réinitialiser le formulaire modal
+            bootstrap.Modal.getInstance(document.getElementById('newCustomerModal')).hide();
             form.reset();
         } else {
             alert("Erreur : " + (data.error || "Impossible de créer le client."));
         }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert("Erreur réseau.");
     });
 });
 </script>

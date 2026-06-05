@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Nouvel inventaire{% endblock %}
 {% block content %}
 <h1>Lancer un inventaire</h1>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form|crispy }}
     <button type="submit" class="btn btn-primary">Démarrer l'inventaire</button>
     <a href="{% url 'inventory_list' %}" class="btn btn-secondary">Annuler</a>
 </form>

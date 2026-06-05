@@ -1,58 +1,379 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block title %}Nouvel achat{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-light: #eef1ff;
+        --success: #2ec4b6;
+        --danger: #e63946;
+        --warning: #ff9f1c;
+        --dark: #1d3557;
+        --gray: #6c757d;
+        --light-gray: #f8f9fa;
+        --border: #dee2e6;
+        --shadow: 0 2px 8px rgba(0,0,0,0.06);
+        --radius: 10px;
+        --radius-sm: 6px;
+        --transition: 0.2s ease;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--primary-light);
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header h1 i {
+        color: var(--primary);
+        font-size: 1.3rem;
+    }
+
+    .card-form {
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin: 1.5rem 0 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-title i {
+        color: var(--primary);
+    }
+
+    .form-label-custom {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.3rem;
+    }
+
+    .input-group-custom {
+        display: flex;
+        gap: 0;
+    }
+
+    .input-group-custom select,
+    .input-group-custom input {
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm) !important;
+        border: 1px solid var(--border);
+        border-right: none;
+    }
+
+    .input-group-custom .btn-add {
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0 !important;
+        background: white;
+        border: 1px solid var(--border);
+        color: var(--primary);
+        font-weight: 500;
+        white-space: nowrap;
+        padding: 0.375rem 0.75rem;
+        transition: var(--transition);
+    }
+
+    .input-group-custom .btn-add:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .table-items {
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    .table-items thead {
+        background: var(--light-gray);
+    }
+
+    .table-items thead th {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--gray);
+        border-bottom: 2px solid var(--border);
+        padding: 0.6rem 0.75rem;
+    }
+
+    .table-items tbody td {
+        padding: 0.5rem 0.75rem;
+        vertical-align: middle;
+        border-color: var(--border);
+    }
+
+    .table-items tbody tr {
+        transition: var(--transition);
+    }
+
+    .table-items tbody tr:hover {
+        background: var(--primary-light);
+    }
+
+    .table-items select,
+    .table-items input {
+        border-radius: var(--radius-sm) !important;
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.5rem;
+        font-size: 0.875rem;
+        width: 100%;
+        transition: var(--transition);
+    }
+
+    .table-items select:focus,
+    .table-items input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+        outline: none;
+    }
+
+    .btn-add-line {
+        background: white;
+        border: 1px dashed var(--border);
+        color: var(--primary);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-top: 0.75rem;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-line:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+    }
+
+    .btn-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+        background: #3451d1;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: var(--gray);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: var(--transition);
+    }
+
+    .btn-cancel:hover {
+        background: var(--light-gray);
+    }
+
+    .checkbox-delete {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--danger);
+        cursor: pointer;
+    }
+
+    .badge-stock {
+        font-size: 0.7rem;
+        padding: 0.25em 0.6em;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+
+    .total-band {
+        background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
+        border: 1px solid var(--primary-light);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.25rem;
+    }
+
+    .total-band .total-label {
+        font-size: 0.9rem;
+        color: var(--gray);
+        font-weight: 500;
+    }
+
+    .total-band .total-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .input-group-custom {
+            flex-direction: column;
+        }
+        .input-group-custom select,
+        .input-group-custom input {
+            border-radius: var(--radius-sm) !important;
+            border-right: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+        .input-group-custom .btn-add {
+            border-radius: var(--radius-sm) !important;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1>Nouvel achat</h1>
-<form method="post" id="purchase-form">
-    {% csrf_token %}
-    {{ form.as_p }}                      <!-- Ici c'est bien le PurchaseForm avec le champ fournisseur -->
-    <h3>Produits achetés</h3>
-    {{ items_formset.management_form }}
-    <table class="table table-bordered" id="items-table">
-        <thead>
-            <tr>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Prix unitaire</th>
-                <th>Supprimer</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for form in items_formset %}
-                <tr class="item-form">
-                    <td>{{ form.produit }}</td>
-                    <td>{{ form.quantite }}</td>
-                    <td>{{ form.prix_achat }}</td>
-                    <td>
-                        {% if items_formset.can_delete %}
-                            {{ form.DELETE }} <label for="{{ form.DELETE.id_for_label }}">Suppr.</label>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <button type="button" id="add-item" class="btn btn-secondary mb-3">Ajouter une ligne</button>
-    <br>
-    <button type="submit" class="btn btn-primary">Enregistrer l'achat</button>
-    <a href="{% url 'purchase_list' %}" class="btn btn-secondary">Annuler</a>
-</form>
+<div class="page-header">
+    <h1><i class="bi bi-cart-plus"></i> Nouvel achat</h1>
+    <span class="badge bg-light text-dark"><i class="bi bi-calendar"></i> {{ today|date:"d/m/Y" }}</span>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card-form">
+    <form method="post" id="purchase-form">
+        {% csrf_token %}
+
+        <!-- Champ fournisseur -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="{{ form.fournisseur.id_for_label }}" class="form-label-custom">
+                    <i class="bi bi-truck"></i> Fournisseur
+                </label>
+                <div class="input-group-custom">
+                    {{ form.fournisseur }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.numero_facture.id_for_label }}" class="form-label-custom">
+                    <i class="bi bi-receipt"></i> Numéro de facture
+                </label>
+                {{ form.numero_facture }}
+            </div>
+        </div>
+
+        <!-- Lignes de produits -->
+        <div class="section-title">
+            <i class="bi bi-box-seam"></i> Produits achetés
+        </div>
+
+        {{ items_formset.management_form }}
+        <div class="table-items">
+            <table class="table table-borderless mb-0" id="items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Produit</th>
+                        <th style="width: 15%;">Quantité</th>
+                        <th style="width: 20%;">Prix unitaire</th>
+                        <th style="width: 20%;">Sous-total</th>
+                        <th style="width: 5%;">✕</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in items_formset %}
+                        <tr class="item-form">
+                            <td>{{ form.produit }}</td>
+                            <td>{{ form.quantite }}</td>
+                            <td>{{ form.prix_achat }}</td>
+                            <td class="fw-semibold text-end sous-total">0,00 FCFA</td>
+                            <td class="text-center">
+                                {% if items_formset.can_delete %}
+                                    {{ form.DELETE }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" id="add-item" class="btn-add-line">
+            <i class="bi bi-plus-circle"></i> Ajouter un produit
+        </button>
+
+        <!-- Total général -->
+        <div class="total-band d-flex justify-content-between align-items-center mt-4">
+            <span class="total-label"><i class="bi bi-calculator"></i> Montant total de l'achat</span>
+            <span class="total-amount" id="grand-total">0,00 FCFA</span>
+        </div>
+
+        <!-- Boutons -->
+        <div class="btn-actions">
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-check-circle"></i> Enregistrer l'achat
+            </button>
+            <a href="{% url 'purchase_list' %}" class="btn-cancel">Annuler</a>
+        </div>
+    </form>
+</div>
 
 <script>
+// Ajouter une ligne
 document.getElementById('add-item').addEventListener('click', function() {
-    const table = document.getElementById('items-table').getElementsByTagName('tbody')[0];
+    const tbody = document.querySelector('#items-table tbody');
     const totalForms = document.getElementById('id_items-TOTAL_FORMS');
     const currentForms = parseInt(totalForms.value);
-    const newRow = table.querySelector('.item-form').cloneNode(true);
+    const newRow = tbody.querySelector('.item-form').cloneNode(true);
     newRow.innerHTML = newRow.innerHTML.replace(/items-0-/g, `items-${currentForms}-`);
-    // Réinitialiser les valeurs
     newRow.querySelectorAll('input[type=text], input[type=number]').forEach(input => {
         if (input.name.includes('DELETE')) {
-            input.checked = false; // décocher la suppression pour la nouvelle ligne
+            input.checked = false;
         } else {
             input.value = '';
         }
     });
-    table.appendChild(newRow);
+    newRow.querySelector('.sous-total').textContent = '0,00 FCFA';
+    tbody.appendChild(newRow);
     totalForms.value = currentForms + 1;
 });
 </script>

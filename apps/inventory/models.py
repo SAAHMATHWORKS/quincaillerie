@@ -20,8 +20,8 @@ class Product(models.Model):
     categorie = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
     description = models.TextField(blank=True, null=True)
     unite = models.CharField("Unité", max_length=30, default='pièce')  # pièce, kg, litre...
-    prix_achat = models.DecimalField(max_digits=10, decimal_places=2)
-    prix_vente = models.DecimalField(max_digits=10, decimal_places=2)
+    prix_achat = models.IntegerField()
+    prix_vente = models.IntegerField()
     stock_actuel = models.PositiveIntegerField(default=0)
     stock_minimum = models.PositiveIntegerField(default=5)
     actif = models.BooleanField(default=True)

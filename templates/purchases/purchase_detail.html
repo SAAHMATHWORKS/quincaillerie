@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block title %}Détail achat{% endblock %}
 {% block content %}
 <h1>Achat #{{ purchase.id }}</h1>
@@ -15,13 +16,13 @@
         <tr>
             <td>{{ item.produit.nom }}</td>
             <td>{{ item.quantite }}</td>
-            <td>{{ item.prix_achat }} €</td>
-            <td>{{ item.sous_total }} €</td>
+            <td>{{ item.prix_achat }} FCFA</td>
+            <td>{{ item.sous_total }} FCFA</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<p><strong>Total : {{ purchase.montant_total }} €</strong></p>
+<p><strong>Total : {{ purchase.montant_total }} FCFA</strong></p>
 <a href="{% url 'purchase_order_pdf' purchase.id %}" class="btn btn-outline-danger" target="_blank">📄 Bon d'achat PDF</a>
 <a href="{% url 'purchase_list' %}" class="btn btn-secondary">Retour</a>
 {% endblock %}

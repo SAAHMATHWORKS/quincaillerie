@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block title %}Achats{% endblock %}
 {% block content %}
 <h1>Liste des achats</h1>
@@ -21,7 +22,7 @@
             <td>{{ purchase.date|date:"d/m/Y H:i" }}</td>
             <td>{{ purchase.fournisseur.nom|default:"-" }}</td>
             <td>{{ purchase.numero_facture|default:"-" }}</td>
-            <td>{{ purchase.montant_total }} €</td>
+            <td>{{ purchase.montant_total }} FCFA</td>
             <td><a href="{% url 'purchase_detail' purchase.id %}" class="btn btn-sm btn-info">Voir</a></td>
         </tr>
     {% empty %}

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block title %}Détail vente{% endblock %}
 {% block content %}
 <h1>Vente #{{ sale.id }}</h1>
@@ -14,13 +15,13 @@
         <tr>
             <td>{{ item.produit.nom }}</td>
             <td>{{ item.quantite }}</td>
-            <td>{{ item.prix_vente }} €</td>
-            <td>{{ item.sous_total }} €</td>
+            <td>{{ item.prix_vente }} FCFA</td>
+            <td>{{ item.sous_total }} FCFA</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<p><strong>Total : {{ sale.total }} €</strong></p>
+<p><strong>Total : {{ sale.total }} FCFA</strong></p>
 <a href="{% url 'sale_receipt' sale.id %}" class="btn btn-outline-secondary" target="_blank">
     🧾 Voir le reçu (imprimable)
 </a>

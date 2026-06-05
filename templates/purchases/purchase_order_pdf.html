@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -60,15 +61,15 @@
             <tr>
                 <td>{{ item.produit.nom }}</td>
                 <td>{{ item.quantite }}</td>
-                <td>{{ item.prix_achat|floatformat:2 }} XAF</td>
-                <td>{{ item.sous_total|floatformat:2 }} XAF</td>
+                <td>{{ item.prix_achat|intcomma }} XAF</td>
+                <td>{{ item.sous_total|intcomma }} XAF</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <div class="total">
-        Total : {{ purchase.montant_total|floatformat:2 }} XAF
+        Total : {{ purchase.montant_total|intcomma }} XAF
     </div>
 
     <div class="footer">

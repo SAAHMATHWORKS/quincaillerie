@@ -6,7 +6,7 @@ class Purchase(models.Model):
     fournisseur = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True)
     numero_facture = models.CharField(max_length=100, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
-    montant_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    montant_total = models.IntegerField(default=0)
     utilisateur = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
@@ -20,8 +20,8 @@ class PurchaseItem(models.Model):
     achat = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='items')
     produit = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantite = models.PositiveIntegerField()
-    prix_achat = models.DecimalField(max_digits=10, decimal_places=2)
-    sous_total = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+    prix_achat = models.IntegerField()
+    sous_total = models.IntegerField(editable=False)
 
     class Meta:
         verbose_name = "Ligne d'achat"

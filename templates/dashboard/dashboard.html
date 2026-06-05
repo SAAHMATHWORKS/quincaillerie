@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load humanize %}
 {% block title %}Tableau de bord{% endblock %}
 {% block content %}
 <h1>Tableau de bord</h1>
@@ -60,7 +61,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{ nb_ventes_periode }}</h5>
                 <p class="card-text">Ventes sur la période</p>
-                <p class="card-text"><strong>{{ total_ventes_periode|floatformat:2 }} €</strong></p>
+                <p class="card-text"><strong>{{ total_ventes_periode|intcomma }} FCFA</strong></p>
                 <a href="{% url 'sale_list' %}?date_debut={{ date_debut|date:'Y-m-d' }}&date_fin={{ date_fin|date:'Y-m-d' }}" class="btn btn-sm btn-outline-primary">Voir les ventes</a>
             </div>
         </div>
@@ -70,7 +71,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{ nb_achats_periode }}</h5>
                 <p class="card-text">Achats sur la période</p>
-                <p class="card-text"><strong>{{ total_achats_periode|floatformat:2 }} €</strong></p>
+                <p class="card-text"><strong>{{ total_achats_periode|intcomma }} FCFA</strong></p>
                 <a href="{% url 'purchase_list' %}?date_debut={{ date_debut|date:'Y-m-d' }}&date_fin={{ date_fin|date:'Y-m-d' }}" class="btn btn-sm btn-outline-success">Voir les achats</a>
             </div>
         </div>
@@ -118,7 +119,7 @@ new Chart(ctxVentes, {
     data: {
         labels: {{ ventes_labels|safe }},
         datasets: [{
-            label: 'Ventes (€)',
+            label: 'Ventes (FCFA)',
             data: {{ ventes_data|safe }},
             backgroundColor: 'rgba(54, 162, 235, 0.7)',
             borderColor: 'rgba(54, 162, 235, 1)',
@@ -140,7 +141,7 @@ new Chart(ctxAchats, {
     data: {
         labels: {{ achats_labels|safe }},
         datasets: [{
-            label: 'Achats (€)',
+            label: 'Achats (FCFA)',
             data: {{ achats_data|safe }},
             backgroundColor: 'rgba(75, 192, 192, 0.7)',
             borderColor: 'rgba(75, 192, 192, 1)',
