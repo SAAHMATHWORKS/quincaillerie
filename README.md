@@ -1,5 +1,3 @@
-**✅ Voici un beau README.md propre et bien structuré :**
-
 ````markdown
 # 🏬 Quincaillerie - Application de gestion
 
@@ -167,14 +165,5 @@ N’hésitez pas à ouvrir une **issue** ou une **pull request**.
 
 ---
 
-**Prêt à déployer ?**  
-Poussez ce README sur GitHub et lancez votre déploiement !
 
-```
 
----
-
-**Tu peux copier-coller directement** ce contenu dans un fichier `README.md`.
-
-Veux-tu que je modifie quelque chose (ajouter des badges, changer le ton, ajouter des captures d’écran, etc.) ?
-```
